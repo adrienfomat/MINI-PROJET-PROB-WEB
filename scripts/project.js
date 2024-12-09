@@ -17,12 +17,117 @@ var init = function () {
 	createShop();
 	
 	// TODO : add other initializations to achieve if you think it is required
+
+
+	// ajout du gestionnaire d'evenement keyup à l'element #filter
+	var filterInput = document.getElementById("filter");
+    filterInput.addEventListener("keyup", filterProducts);
+
 }
 window.addEventListener("load", init);
 
 
 
 // usefull functions
+
+// fonction de filtrage des produits en fonction du texte saisi dans l'élément #filter
+var filterProducts = function () {
+    var filterText = document.getElementById("filter").value.toLowerCase();
+    var shop = document.getElementById("boutique");
+    shop.innerHTML = ""; // on vide la boutique
+
+    for (var i = 0; i < catalog.length; i++) {
+        var product = catalog[i];
+
+		// si le texte saisi est contenu dans le nom du produit, on l'ajoute à la boutique
+        if (product.name.toLowerCase().indexOf(filterText) !== -1) {
+            shop.appendChild(createProduct(product, i));
+        }
+    }
+}
+
+
+
+/* Ici nous allons implementer la gestion du panier  */
+var panier = [];
+
+// fonction pour ajouter un produit au panier
+var addToPanier = function (index, quantity) {
+
+    var product = catalog[index]; // Récupération du produit à partir de l'index
+    var existingProduct = panier.find(item => item.index === index); // Recherche du produit dans le panier
+
+	// Si le produit existe déjà dans le panier, on incrémente la quantité , sinon on l'ajoute
+    if (existingProduct) {
+        existingProduct.quantity += quantity;
+        if (existingProduct.quantity > MAX_QTY) {
+            existingProduct.quantity = MAX_QTY;
+        }
+    } else {
+        panier.push({ index: index, quantity: quantity }); 
+    }
+
+    updatePanier();
+}
+
+
+
+// fonction pour mettre à jour le panier
+var updatePanier = function () {
+	// Récupération de l'élément #panier
+    var panierElement = document.querySelector("#panier .achats");
+    panierElement.innerHTML = ""; // On vide le panier
+
+    var total = 0;
+	
+	// Pour chaque produit dans le panier, on crée un élément .achat et on l'ajoute à l'élément #panier 
+    panier.forEach(item => {
+        var product = catalog[item.index];
+        var panierItem = document.createElement("div");
+        panierItem.className = "achat";
+        panierItem.id = item.index + "-achat";
+
+        var figure = createFigureBlock(product);
+        panierItem.appendChild(figure);
+
+        var name = createBlock("h4", product.name);
+        panierItem.appendChild(name);
+
+        var quantity = createBlock("div", item.quantity, "quantite");
+        panierItem.appendChild(quantity);
+
+        var price = createBlock("div", product.price, "prix");
+        panierItem.appendChild(price);
+
+        var control = document.createElement("div");
+        control.className = "controle";
+
+        var removeButton = document.createElement("button");
+        removeButton.className = "retirer";
+        removeButton.id = item.index + "-remove";
+        removeButton.addEventListener("click", function() {
+            removeFromPanier(item.index);
+        });
+        control.appendChild(removeButton);
+
+        panierItem.appendChild(control);
+
+        panierElement.appendChild(panierItem);
+
+        total += product.price * item.quantity;
+    });
+
+    document.getElementById("montant").innerText = total; // Mise à jour du montant total
+}
+
+// fonction pour retirer un produit du panier
+var removeFromPanier = function (index) {
+    panier = panier.filter(item => item.index !== index);
+    updatePanier();
+}
+
+
+
 
 /*
 * create and add all the div.produit elements to the div#boutique element
@@ -104,9 +209,38 @@ var createOrderControlBlock = function (index) {
 	button.className = 'commander';
 	button.id = index + "-" + orderIdKey;
 	// add control to control as its child
+	//on rend le bouton non cliquable
+	button.style.opacity = "0.5"; 
+    button.disabled = true; 	
 	control.appendChild(button);
 	
 	// the built control div node is returned
+	// on Ajoute un gestionnaire d'événements pour valider la quantité saisie
+	input.addEventListener("input", function() {
+        var value = parseInt(input.value, 10);
+        if (isNaN(value) || value < 0 || value > MAX_QTY) {
+            input.value = "0";
+        }
+        // Activation/désactivation du bouton de mise en panier
+        if (input.value === "0") {
+            button.style.opacity = "0.5";
+            button.disabled = true;
+        } else {
+            button.style.opacity = "1";
+            button.disabled = false;
+        }
+    });
+
+
+	// on  Ajoute un gestionnaire d'événements pour ajouter l'article au panier
+    button.addEventListener("click", function() {
+        addToPanier(index, parseInt(input.value, 10));
+        input.value = "0";
+        button.style.opacity = "0.5";
+        button.disabled = true;
+    });
+
+
 	return control;
 }
 
@@ -120,15 +254,13 @@ var createOrderControlBlock = function (index) {
 */
 var createFigureBlock = function (product) {
 
-    // Create figure element
+    // creattion de l'élément figure
     var figure = document.createElement("figure");
 
-    // Create img element
+    // Création de l'élément img
     var img = document.createElement("img");
-    img.src = product.image; 
-    img.alt = product.name; 
-    figure.appendChild(img);
-
+    img.src = product.image; // Ajout de l'attribut src
+    figure.appendChild(img); // Ajout de l'élément img à l'élément figure
 
     return figure;
 }

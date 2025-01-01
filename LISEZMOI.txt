@@ -1,0 +1,10 @@
+## GIDE AZANGUE FOMAT && SOUMAYA NAFIA 
+
+#Question Résolu : Toutes les questions demandées ont été résolues sans problème, de la première à la septième, avec des commentaires à l'appui. La deuxieme partie de laqustion bonus a été faite aussi
+
+
+#Probléme: Lorsque nous avons voulu répondre à la question 8 concernant la modification de la quantité de produit dans le panier, cela a posé un problème. La mise en place de la modification et la mise à jour du prix sont correctes, sauf qu'il y a un problème au niveau du bouton supprimer. En effet, si nous ajoutons n produits, il est impossible de supprimer le produit n-1 tant que le produit n n'a pas été supprimé. Nous avons pensé qu'il fallait modifier la conception du bouton supprimer, car il semblait être directement associé au produit le plus récent ajouté au panier. Nous avons donc décidé de créer une instance distincte du bouton supprimer pour chaque produit ajouté. Cependant, cela ne fonctionne toujours pas. Nous vous fournissons ici ce que nous avons fait à ce niveau. Il existe un fichier JS nommé projet2.js qui contient presque le même contenu que projet.js, à la seule différence de la fonction updatePanier, qui a été modifiée pour résoudre ce problème. Pour voir ce que nous avons fait pour la question 8, il suffit de remplacer le contenu de projet.js par celui de projet2.js, ou simplement de copier la fonction updatePanier de projet2.js et de l'insérer dans projet.js
+
+# Donc pour résumé pour les questions du Mini Tp lancer le projet normalement avec projet.js , et pour les questions bonus, remplaver le contenu complet de projet.js par celui de projet2.js
+
+#En vous remerciant, nous vous souhaitons un joyeux anniversaire par anticipation. 

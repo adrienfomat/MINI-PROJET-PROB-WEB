@@ -1,0 +1,62 @@
+var updatePanier = function () {
+    // Mise à jour de l'affichage du panier
+    var panierElement = document.querySelector("#panier .achats");
+    panierElement.innerHTML = ""; // On vide le panier
+
+    var total = 0;
+
+    panier.forEach(item => {
+        var product = catalog[item.index];
+        var panierItem = document.createElement("div");
+        panierItem.className = "achat";
+        panierItem.id = item.index + "-achat";
+
+        var figure = createFigureBlock(product);
+        panierItem.appendChild(figure);
+
+        var name = createBlock("h4", product.name);
+        panierItem.appendChild(name);
+
+        // Ajout d'un champ de saisie pour la quantité
+        var quantityInput = document.createElement("input");
+        quantityInput.type = "number";
+        quantityInput.step = "1";
+        quantityInput.value = item.quantity;
+        quantityInput.min = "0";
+        quantityInput.max = MAX_QTY.toString();
+        quantityInput.className = "quantite";
+        // Ajout d'un gestionnaire d'événements pour mettre à jour la quantité
+        quantityInput.addEventListener("input", function() {
+            var value = parseInt(quantityInput.value, 10);
+            if (isNaN(value) || value < 0 || value > MAX_QTY) {
+                quantityInput.value = item.quantity;
+            } else {
+                item.quantity = value;
+                updatePanier();
+            }
+        });
+        panierItem.appendChild(quantityInput);
+
+        var price = createBlock("div", product.price, "prix");
+        panierItem.appendChild(price);
+
+        var control = document.createElement("div");
+        control.className = "controle";
+        // Ajout d'un bouton pour retirer le produit du panier
+        var removeButton = document.createElement("button");
+        removeButton.className = "retirer";
+        removeButton.id = item.index + "-remove";
+        removeButton.addEventListener("click", function() {
+            removeFromPanier(item.index);
+        });
+        control.appendChild(removeButton);
+
+        panierItem.appendChild(control);
+
+        panierElement.appendChild(panierItem);
+
+        total += product.price * item.quantity;
+    });
+
+    document.getElementById("montant").innerText = total; // Mise à jour du montant total
+}

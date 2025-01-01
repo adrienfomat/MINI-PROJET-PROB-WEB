@@ -1,4 +1,4 @@
-// YOUR NAME HERE
+// GIDE AZANGUE FOMAT && SOUMAYA NAFIA
 
 // === constants ===
 const MAX_QTY = 9;
@@ -61,7 +61,7 @@ var addToPanier = function (index, quantity) {
     if (existingProduct) {
         existingProduct.quantity += quantity;
         if (existingProduct.quantity > MAX_QTY) {
-            existingProduct.quantity = MAX_QTY;
+            existingProduct.quantity = MAX_QTY;// On limite la quantité à MAX_QTY
         }
     } else {
         panier.push({ index: index, quantity: quantity }); 
